@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: release-name-sonarqube
+  namespace: "default"
+  annotations:
+    kubernetes.io/ingress.class: "gce-internal"
+  labels:
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: sonarqube
+    app.kubernetes.io/version: 10.2.1
+    helm.sh/chart: sonarqube-3.3.3
+spec:
+  rules:
+    - host: sonarqube.k8sdev.xtendr.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: release-name-sonarqube
+                port:
+                  name: http
