@@ -75,9 +75,9 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Return the Database Hostname
 */}}
 {{- define "sonarqube.database.host" -}}
-{{- ternary (include "sonarqube.postgresql.fullname" .) .Values.externalDatabase.host .Values.postgresql.enabled -}}
+{{- ternary (print (include "sonarqube.postgresql.fullname" .) "." .Release.Namespace ".svc." .Values.clusterDomain) .Values.externalDatabase.host .Values.postgresql.enabled -}}
 {{- end -}}
-
+{{/* sonarqube.svc.cluster.local */}}
 {{/*
 Return the Database Port
 */}}
