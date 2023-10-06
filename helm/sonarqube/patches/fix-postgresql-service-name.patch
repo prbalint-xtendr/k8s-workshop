@@ -1,0 +1,60 @@
+diff --git a/templates/_helpers.tpl b/templates/_helpers.tpl
+index 0ab7178..920c2d8 100644
+--- a/templates/_helpers.tpl
++++ b/templates/_helpers.tpl
+@@ -75,7 +75,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this
+ Return the Database Hostname
+ */}}
+ {{- define "sonarqube.database.host" -}}
+-{{- ternary (include "sonarqube.postgresql.fullname" .) .Values.externalDatabase.host .Values.postgresql.enabled -}}
++{{- ternary (print (include "sonarqube.postgresql.fullname" .) "." .Release.Namespace ".svc." .Values.clusterDomain) .Values.externalDatabase.host .Values.postgresql.enabled -}}
+ {{- end -}}
+ {{/* sonarqube.svc.cluster.local */}}
+ {{/*
+diff --git a/values.yaml b/values.yaml
+index 4599ed4..72de54f 100644
+--- a/values.yaml
++++ b/values.yaml
+@@ -433,7 +433,7 @@ initContainers: []
+ service:
+   ## @param service.type SonarQube&trade; service type
+   ##
+-  type: LoadBalancer
++  type: ClusterIP
+   ## @param service.ports.http SonarQube&trade; service HTTP port
+   ## @param service.ports.elastic SonarQube&trade; service ElasticSearch port
+   ##
+@@ -491,10 +491,11 @@ service:
+ ingress:
+   ## @param ingress.enabled Enable ingress record generation for SonarQube&trade;
+   ##
+-  enabled: false
++  enabled: true
+   ## @param ingress.pathType Ingress path type
+   ##
+-  pathType: ImplementationSpecific
++#  pathType: ImplementationSpecific
++  pathType: Prefix
+   ## @param ingress.apiVersion Force Ingress API version (automatically detected if not set)
+   ##
+   apiVersion: ""
+@@ -505,7 +506,7 @@ ingress:
+   ingressClassName: ""
+   ## @param ingress.hostname Default host for the ingress record
+   ##
+-  hostname: sonarqube.local
++  hostname: sonarqube.k8sdev.xtendr.io
+   ## @param ingress.path Default path for the ingress record
+   ## NOTE: You may need to set this to '/*' in order to use this with ALB ingress controllers
+   ##
+@@ -518,7 +519,9 @@ ingress:
+   ##   kubernetes.io/ingress.class: nginx
+   ##   cert-manager.io/cluster-issuer: cluster-issuer-name
+   ##
+-  annotations: {}
++  annotations:
++    kubernetes.io/ingress.class: "gce-internal"
++
+   ## @param ingress.labels Additional labels for the Ingress resource.
+   ## e.g:
+   ## labels:
