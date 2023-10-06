@@ -41,9 +41,6 @@ commonAnnotations: {}
 ## @param clusterDomain Kubernetes cluster domain name
 ##
 clusterDomain: cluster.local
-# @param serviceDomain Kubernetes service domain name
-#
-#serviceDomain: svc.{{ .Values.clusterDomain }}
 ## @param extraDeploy Array of extra objects to deploy with the release
 ##
 extraDeploy: []
